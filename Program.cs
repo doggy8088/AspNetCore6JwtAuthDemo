@@ -1,3 +1,5 @@
+using System.Security.Claims;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -36,6 +38,47 @@ app.MapGet("/weatherforecast", () =>
     return forecast;
 })
 .WithName("GetWeatherForecast");
+
+app.MapPost("/signin", (LoginViewModel login, JwtHelpers jwt) =>
+    {
+        if (ValidateUser(login))
+        {
+            var token = jwt.GenerateToken(login.Username);
+            return Results.Ok(new { token });
+        }
+        else
+        {
+            return Results.BadRequest();
+        }
+    })
+    .WithName("SignIn")
+    .AllowAnonymous();
+
+app.MapGet("/claims", (ClaimsPrincipal user) =>
+    {
+        return Results.Ok(user.Claims.Select(p => new { p.Type, p.Value }));
+    })
+    .WithName("Claims")
+    .RequireAuthorization();
+
+app.MapGet("/username", (ClaimsPrincipal user) =>
+    {
+        return Results.Ok(user.Identity?.Name);
+    })
+    .WithName("Username")
+    .RequireAuthorization();
+
+app.MapGet("/jwtid", (ClaimsPrincipal user) =>
+    {
+        return Results.Ok(user.Claims.FirstOrDefault(p => p.Type == "jti")?.Value);
+    })
+    .WithName("JwtId")
+    .RequireAuthorization();
+
+bool ValidateUser(LoginViewModel login)
+{
+    return true;
+}
 
 app.Run();
 
