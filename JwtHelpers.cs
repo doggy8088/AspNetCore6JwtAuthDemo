@@ -36,8 +36,8 @@ public class JwtHelpers
         //claims.Add(new Claim(ClaimTypes.Name, userName));
 
         // TODO: You can define your "roles" to your Claims.
-        claims.Add(new Claim("roles", "Admin"));
-        claims.Add(new Claim("roles", "Users"));
+        claims.Add(new Claim(ClaimTypes.Role, "Admin"));
+        claims.Add(new Claim(ClaimTypes.Role, "Users"));
 
         var userClaimsIdentity = new ClaimsIdentity(claims);
 
