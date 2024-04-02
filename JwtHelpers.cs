@@ -1,6 +1,6 @@
 using System.Security.Claims;
 using System.Text;
-using System.IdentityModel.Tokens.Jwt;
+using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
 
 public class JwtHelpers
@@ -60,10 +60,9 @@ public class JwtHelpers
             SigningCredentials = signingCredentials
         };
 
-        // Generate a JWT securityToken, than get the serialized Token result (string)
-        var tokenHandler = new JwtSecurityTokenHandler();
-        var securityToken = tokenHandler.CreateToken(tokenDescriptor);
-        var serializeToken = tokenHandler.WriteToken(securityToken);
+        // Generate a JWT, than get the serialized Token result (string)
+        var tokenHandler = new JsonWebTokenHandler();
+        var serializeToken = tokenHandler.CreateToken(tokenDescriptor);
 
         return serializeToken;
     }
